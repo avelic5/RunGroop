@@ -1,0 +1,36 @@
+# Build rezultati
+bin/
+obj/
+appsettings.json
+
+# VS folder
+.vs/
+
+# User-specific fajlovi
+*.user
+*.suo
+
+# IDE konfiguracija
+*.csproj.user
+*.dbmdl
+
+# Rider / JetBrains
+.idea/
+
+# Paket cache
+packages/
+*.nupkg
+
+# Logovi
+*.log
+
+# Debug fajlovi
+*.pdb
+
+# Backup fajlovi
+*.bak
+
+# OS fajlovi
+.DS_Store
+Thumbs.db
+
