@@ -34,3 +34,4 @@ packages/
 .DS_Store
 Thumbs.db
 
+appsettings.json

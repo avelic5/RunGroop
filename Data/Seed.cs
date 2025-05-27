@@ -16,7 +16,7 @@ namespace RunGroopWebApp.Data
 
                 if (!context.Clubs.Any())
                 {
-                    context.Clubs.AddRange(new List<Club>()
+                    context.Clubs.AddRange(new List<Club>() //dodavanje u dbcontext dbset elemenete putem liste
                     {
                         new Club()
                         {
