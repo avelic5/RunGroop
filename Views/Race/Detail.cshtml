@@ -1,66 +1,328 @@
 ﻿@model Race
 
-<!-- Page Content -->
-<div class="container">
+@{
+	ViewData["Title"] = @Model.Title; // Postavi naslov stranice na naziv trke
+}
 
-    <!-- Portfolio Item Heading -->
-    <h1 class="my-4">
-        @Model.Title
-       
-    </h1>
+<style>
 
-    <!-- Portfolio Item Row -->
-    <div class="row">
+	/* Globalni stilovi kopirani iz prethodnog dizajna, osiguravaju konzistentnost */
+	body {
+		font-family: 'Open Sans', sans-serif;
+		margin: 0;
+		padding: 0;
+		background: url('https://source.unsplash.com/1920x1080/?running,trail,marathon') no-repeat center center fixed;
+		background-size: cover;
+		color: #333;
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		overflow-x: hidden;
+	}
 
-        <div class="col-md-8">
-            <img class="img-fluid" src="@Model.Image" alt="">
-        </div>
+	header {
+		background: transparent;
+		color: white;
+		padding: 35px 0;
+		text-align: center;
+		position: relative;
+		z-index: 1000;
+	}
 
-        <div class="col-md-4">
-            <h3 class="my-3">Race Description</h3>
-            <p>@Model.Description</p>
-            <h3 class="my-3">Location</h3>
-            <ul>
-                <li>@Model.Address.City</li>
-                <li>@Model.Address.State</li>
-                <li>@Model.RaceCategory</li>
+		header h1 {
+			margin: 0;
+			font-size: 4em;
+			font-weight: 800;
+			text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+			padding: 0 20px;
+			letter-spacing: 1px;
+		}
 
-            </ul>
-        </div>
+	footer {
+		background: transparent;
+		color: white;
+		text-align: center;
+		padding: 30px 0;
+		margin-top: auto;
+		text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+		font-size: 1em;
+	}
 
-    </div>
-    <!-- /.row -->
-    <!-- Related Projects Row -->
-    <h3 class="my-4">Related Projects</h3>
 
-    <div class="row">
+	/* Glavni naslov sekcije (korišten na listingu, ovdje će se koristiti za 'Related Projects') */
+	h2 {
+		color: #2e8b57;
+		margin-top: 0;
+		border-bottom: 3px solid #3cb371;
+		padding-bottom: 12px;
+		margin-bottom: 30px;
+		font-size: 2.8em;
+		font-weight: 700;
+		text-align: center;
+		letter-spacing: 0.5px;
+	}
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+	p {
+		line-height: 1.9;
+		margin-bottom: 25px;
+		font-size: 1.1em; /* Malo manji paragrafi za detalje */
+		color: #444;
+	}
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+	/* --- STILOVI ZA DETALJNU STRANICU TRKE --- */
+	.detail-page-wrapper {
+		background: rgba(255, 255, 255, 0.92); /* Translucent white background */
+		padding: 60px 0;
+		margin-bottom: 25px;
+		box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		flex-grow: 1; /* Allows this section to fill vertical space */
+	}
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+	.race-detail-content {
+		max-width: 1200px; /* Šira širina za bolji prikaz sadržaja */
+		margin: 0 auto;
+		padding: 40px;
+		background: rgba(255, 255, 255, 0.98); /* Gotovo neprozirna bijela pozadina za sadržaj */
+		border-radius: 15px;
+		box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+		border: 1px solid rgba(220, 220, 220, 0.7);
+		margin-bottom: 50px; /* Razmak prije futera ili ostalog sadržaja ispod */
+	}
 
-    </div>
-    <!-- /.row -->
+	.race-title { /* Stil za glavni naslov trke */
+		font-size: 3.5em;
+		font-weight: 700;
+		color: #2e8b57;
+		border-bottom: 3px solid #3cb371;
+		padding-bottom: 15px;
+		margin-bottom: 40px; /* Više razmaka */
+		text-align: center; /* Centriraj naslov */
+	}
 
-</div>
-<!-- /.container -->
+	.race-image {
+		border-radius: 12px; /* Zaobljeni uglovi slike */
+		box-shadow: 0 6px 20px rgba(0,0,0,0.18); /* Mekša sjena za sliku */
+		object-fit: cover; /* Osigurava da slika popuni prostor bez izobličenja */
+		max-height: 500px; /* Maksimalna visina za veliku sliku */
+		width: 100%;
+	}
+
+	.detail-subheading { /* Stil za H3 naslove unutar detalja (Description, Location, Related Projects) */
+		font-size: 1.8em;
+		font-weight: 600;
+		color: #3cb371; /* Zelena boja */
+		margin-top: 30px;
+		margin-bottom: 15px;
+		border-bottom: 1px solid #eee; /* Suptilna linija ispod */
+		padding-bottom: 8px;
+	}
+
+	.race-info-list {
+		list-style: none; /* Ukloni podrazumijevane bullet-e */
+		padding-left: 0;
+		margin-bottom: 30px;
+	}
+
+		.race-info-list li {
+			font-size: 1.1em;
+			color: #555;
+			margin-bottom: 8px;
+			position: relative;
+			padding-left: 25px; /* Prostor za custom bullet */
+		}
+
+			.race-info-list li::before { /* Custom bullet point */
+				content: "\2022"; /* Unicode bullet */
+				color: #3cb371; /* Zeleni bullet */
+				font-weight: bold;
+				display: inline-block;
+				width: 1em;
+				margin-left: -1em;
+				position: absolute;
+				left: 0;
+			}
+
+
+	/* --- STILOVI ZA POVEZANE PROJEKTE (Related Projects) --- */
+	/* OVAJ SE DIO UKLANJA
+		.related-projects-section {
+			margin-top: 60px;
+		}
+
+		.related-project-card {
+			border: none;
+			border-radius: 8px;
+			box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+			overflow: hidden;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+			background: #fff;
+			height: 100%;
+		}
+
+			.related-project-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 6px 15px rgba(0,0,0,0.18);
+			}
+
+			.related-project-card img {
+				border-radius: 8px;
+				object-fit: cover;
+				width: 100%;
+				height: 180px;
+			}
+		*/
+
+	/* Responsivne prilagodbe */
+	@@media (max-width: 992px) {
+		.race-detail-content {
+			padding: 30px;
+		}
+
+		.race-title {
+			font-size: 3em;
+			margin-bottom: 30px;
+		}
+
+		.detail-subheading {
+			font-size: 1.6em;
+			margin-top: 25px;
+		}
+	}
+
+	@@media (max-width: 768px) {
+		header h1 {
+			font-size: 2.8em;
+		}
+
+		.detail-page-wrapper {
+			padding: 30px 0;
+		}
+
+		.race-detail-content {
+			padding: 25px;
+			margin: 0 15px 40px 15px; /* Dodaj horizontalni margin */
+		}
+
+		.race-title {
+			font-size: 2.5em;
+			margin-bottom: 25px;
+		}
+
+		.detail-subheading {
+			font-size: 1.4em;
+			margin-top: 20px;
+		}
+
+		.race-image {
+			margin-bottom: 20px; /* Razmak ispod slike na manjim ekranima */
+			max-height: 400px;
+		}
+		/* UKLANJANJE STILOVA ZA RELATED PROJECTS U MEDIA QUERY-u
+			.related-projects-section {
+				margin-top: 40px;
+			}
+
+			.col-md-3.col-sm-6.mb-4 {
+				margin-bottom: 20px !important;
+			}
+			*/
+	}
+
+	@@media (max-width: 576px) {
+		header h1 {
+			font-size: 2em;
+		}
+
+		.race-detail-content {
+			padding: 20px;
+			margin: 0 10px 30px 10px;
+		}
+
+		.race-title {
+			font-size: 1.8em;
+			padding-bottom: 10px;
+			margin-bottom: 20px;
+		}
+
+		.detail-subheading {
+			font-size: 1.2em;
+		}
+
+		.race-info-list li {
+			font-size: 1em;
+		}
+		/* UKLANJANJE STILOVA ZA RELATED PROJECTS U MEDIA QUERY-u
+			.col-md-3.col-sm-6.mb-4 {
+				flex: 0 0 100%;
+				max-width: 100%;
+			}
+			*/
+	}
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"]</title>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+	<header>
+		<h1>Race Details</h1>
+	</header>
+
+	<div class="detail-page-wrapper">
+		<div class="container">
+			<div class="race-detail-content">
+				<h1 class="my-4 race-title">
+					@Model.Title
+				</h1>
+
+				<div class="row">
+					<div class="col-md-8">
+						<img class="img-fluid race-image" src="@Model.Image" alt="Image for @Model.Title">
+					</div>
+
+					<div class="col-md-4">
+						<h3 class="my-3 detail-subheading">Race Description</h3>
+						<p class="race-description-text">@Model.Description</p>
+
+						<h3 class="my-3 detail-subheading">Race Information</h3>
+						<ul class="race-info-list">
+							<li><strong>Category:</strong> @Html.DisplayFor(model => model.RaceCategory)</li>
+							<li><strong>Location:</strong> @Model.Address.City, @Model.Address.State</li>
+							<li><strong>Start Time:</strong> @Html.DisplayFor(model => model.StartTime)</li>
+							<li><strong>Entry Fee:</strong> @Html.DisplayFor(model => model.EntryFee)</li>
+							@if (!string.IsNullOrEmpty(Model.Website))
+							{
+								<li><strong>Website:</strong> <a href="@Model.Website" target="_blank" rel="noopener noreferrer">Visit Website</a></li>
+							}
+							@if (!string.IsNullOrEmpty(Model.Contact))
+							{
+								<li><strong>Contact:</strong> @Model.Contact</li>
+							}
+							@if (!string.IsNullOrEmpty(Model.Twitter))
+							{
+								<li><strong>Twitter:</strong> <a href="@Model.Twitter" target="_blank" rel="noopener noreferrer">@@@Model.Twitter.Split('/').Last()</a></li>
+							}
+							@if (!string.IsNullOrEmpty(Model.Facebook))
+							{
+								<li><strong>Facebook:</strong> <a href="@Model.Facebook" target="_blank" rel="noopener noreferrer">Facebook Page</a></li>
+							}
+						</ul>
+					</div>
+				</div>
+				@* REMOVED RELATED PROJECTS SECTION *@
+			</div>
+		</div>
+	</div>
+
+	
+</body>
+</html>

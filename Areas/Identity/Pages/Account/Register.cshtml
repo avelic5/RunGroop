@@ -1,0 +1,81 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    // Layout = "/Views/Shared/_Layout.cshtml"; // Nije obavezno ako _ViewStart.cshtml ispravno radi
+}
+
+<div class="main-content-wrapper">
+    @* Custom klasa za centralni omotač sa blurom *@
+    <div class="form-card-container">
+        @* Custom klasa za karticu sa formom *@
+        <h1 class="form-title">@ViewData["Title"]</h1>
+        <p class="form-subtitle">Create a new account.</p>
+
+        <div class="form-content-area">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger validation-summary" role="alert"></div>
+
+                <div class="form-group-custom">
+                    @* Custom klasa za grupu labela/inputa *@
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="custom-form-control" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="Input.Email" class="text-danger validation-message"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="custom-form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="Input.Password" class="text-danger validation-message"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" class="custom-form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger validation-message"></span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    @* Primjenite vaše custom dugme klase *@
+                    <button id="registerSubmit" type="submit" class="custom-btn primary-btn">Register</button>
+                </div>
+            </form>
+        </div>
+        <p class="mt-4 text-center">
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="form-link">Already have an account? Login here.</a>
+        </p>
+        @*
+        <section>
+            <h3>Use another service to register.</h3>
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                            about setting up this ASP.NET application to support logging in via external services</a>.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+        *@
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

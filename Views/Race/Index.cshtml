@@ -1,34 +1,368 @@
 ﻿@model IEnumerable<Race>
+
 @{
-    
+    ViewData["Title"] = "Our Races"; // Postavi naslov stranice za trke
 }
-<div class="album py-5 bg-light">
-    <div class="container">
 
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <img class="card-img-top" src="@item.Image" width="100%" height="225" alt="Card image cap">
-                        <div class="card-body">
-                            <p class="card-text">@item.Title</p>
-                            <p class="card-text">@item.Description</p>
+<style>
+    /* Globalni stilovi kopirani iz prethodnog dizajna, osiguravaju konzistentnost */
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('https://source.unsplash.com/1920x1080/?running,trail,marathon') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a asp-controller="Race" asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">View</a>
+    header {
+        background: transparent;
+        color: white;
+        padding: 35px 0;
+        text-align: center;
+        position: relative;
+        z-index: 1000;
+    }
 
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+        header h1 {
+            margin: 0;
+            font-size: 4em;
+            font-weight: 800;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            letter-spacing: 1px;
+        }
+
+    footer {
+        background: transparent;
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        margin-top: auto;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        font-size: 1em;
+    }
+
+    h2 {
+        color: #2e8b57;
+        margin-top: 0;
+        border-bottom: 3px solid #3cb371;
+        padding-bottom: 12px;
+        margin-bottom: 30px;
+        font-size: 2.8em;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+
+    p {
+        line-height: 1.9;
+        margin-bottom: 25px;
+        font-size: 1.2em;
+        text-align: justify;
+    }
+
+    /* --- STILOVI ZA LISTU TRKA (REUSABLE FOR RACES) --- */
+    .listing-section { /* Preimenovano u generičnije 'listing-section' */
+        background: rgba(255, 255, 255, 0.92); /* Podudarnost s prethodnim sekcijama sadržaja */
+        padding: 60px 0; /* Izdašna padding za cijelu sekciju */
+        margin-bottom: 25px; /* Razmak prije futera */
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        flex-grow: 1; /* Omogućava ovoj sekciji da popuni vertikalni prostor */
+    }
+
+    .list-card { /* Preimenovano u generičnije 'list-card' */
+        background: rgba(255, 255, 255, 0.98); /* Gotovo neprozirna bijela za kartice */
+        border: none;
+        border-radius: 12px; /* Zaobljeni uglovi za kartice */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Mekša sjena za kartice */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden; /* Osigurava da su uglovi slike zaobljeni */
+        margin-bottom: 30px; /* Vertikalni razmak između kartica */
+        display: flex; /* Koristi flexbox za organizaciju unutar kartice */
+        flex-direction: column; /* Sadržaj se slaže okomito */
+        height: 100%; /* Osigurava da su kartice iste visine u redu */
+    }
+
+        .list-card:hover {
+            transform: translateY(-8px); /* Efekt podizanja na hoveru */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25); /* Jača sjena na hoveru */
+        }
+
+        .list-card .card-img-top {
+            border-top-left-radius: 12px; /* Podudarnost s border-radius kartice */
+            border-top-right-radius: 12px;
+            object-fit: cover; /* Osigurava da slike pokrivaju područje bez izobličenja */
+            height: 225px; /* Fiksna visina za slike */
+            width: 100%;
+        }
+
+        .list-card .card-body {
+            padding: 25px; /* Više paddinga unutar tijela kartice */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Omogućava body-u da zauzme preostali prostor */
+        }
+
+        .list-card .card-title-text { /* Specifična klasa za glavni naslov */
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2e8b57; /* Zelena boja za naslov */
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .list-card .card-description-text { /* Specifična klasa za opis */
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+            height: 80px; /* Fiksna visina za opis kako bi kartice bile uniformne */
+            overflow: hidden; /* Sakrij višak teksta */
+            text-overflow: ellipsis; /* Dodaj elipsu za skriveni tekst */
+        }
+
+        .list-card .card-category-text { /* Specifična klasa za kategoriju */
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #3cb371; /* Zelena boja za kategoriju */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stilovi dugmadi za kartice - manja verzija glavnog dugmeta */
+        .list-card .btn-custom-sm {
+            background-color: #3cb371;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none !important;
+            border: none !important;
+            outline: none !important;
+            border-radius: 25px; /* Manji zaobljeni oblik */
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            white-space: nowrap; /* Spriječi prelamanje teksta dugmeta */
+            display: inline-flex; /* Omogući centriranje teksta */
+            align-items: center; /* Vertikalno centriraj tekst */
+            justify-content: center; /* Horizontalno centriraj tekst */
+            margin-right: 5px; /* Razmak između dugmadi */
+        }
+
+            .list-card .btn-custom-sm:hover {
+                background-color: #2e8b57;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            }
+
+        /* Stil za dugme "Delete" unutar kartice */
+        .list-card .btn-delete-sm {
+            background-color: #dc3545; /* Crvena boja */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none !important;
+            border: none !important;
+            outline: none !important;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .list-card .btn-delete-sm:hover {
+                background-color: #c82333; /* Tamnija crvena na hoveru */
+                transform: translateY(-2px);
+                box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            }
+
+
+    /* Stil za dugme "Create New Race" iznad liste */
+    .btn-create-new {
+        background-color: #007bff; /* Plava boja za 'Create New' */
+        color: white;
+        padding: 15px 30px;
+        text-decoration: none !important;
+        border: none !important;
+        outline: none !important;
+        border-radius: 30px;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+        letter-spacing: 0.5px;
+        display: block; /* Postavi kao blok element */
+        width: fit-content; /* Prilagodi širinu sadržaju */
+        margin: 0 auto 40px auto; /* Centriraj ga i dodaj donju marginu */
+    }
+
+        .btn-create-new:hover {
+            background-color: #0056b3; /* Tamnija plava na hoveru */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+        }
+
+
+    /* Preklapanje Bootstrap grid stilova za manje ekrane kako bi se osigurala padding */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Responsivna prilagodbe za manje ekrane */
+    @@media (max-width: 992px) {
+        header h1 {
+            font-size: 3.5em;
+        }
+
+        .listing-section {
+            padding: 40px 0;
+        }
+
+        .list-card .card-title-text {
+            font-size: 1.6em;
+        }
+
+        .list-card .card-body {
+            padding: 20px;
+        }
+
+        .btn-create-new {
+            padding: 12px 25px;
+            font-size: 1em;
+            margin-bottom: 30px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        header h1 {
+            font-size: 2.8em;
+        }
+
+        .listing-section {
+            padding: 30px 0;
+        }
+
+        .list-card .card-title-text {
+            font-size: 1.4em;
+        }
+
+        .list-card .card-description-text {
+            height: auto; /* Omogući opisu da se proširi na manjim ekranima */
+            max-height: 100px; /* Opcionalno: postavi maksimalnu visinu */
+        }
+
+        .list-card .btn-custom-sm,
+        .list-card .btn-delete-sm {
+            padding: 8px 15px;
+            font-size: 0.85em;
+        }
+
+        .btn-create-new {
+            margin-bottom: 25px;
+        }
+    }
+
+    @@media (max-width: 576px) { /* Bootstrap sm breakpoint */
+        header h1 {
+            font-size: 2em;
+        }
+
+        .listing-section .container {
+            padding: 0 10px;
+        }
+
+        .col-md-4 { /* Kartice će se slagati na vrlo malim ekranima, neka budu pune širine */
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .list-card {
+            margin-bottom: 20px;
+        }
+
+            .list-card .card-title-text {
+                font-size: 1.2em;
+            }
+
+            .list-card .card-body {
+                padding: 15px;
+            }
+
+            .list-card .btn-group {
+                flex-direction: column; /* Dugmad idu jedno ispod drugog na malim ekranima */
+                gap: 10px; /* Razmak između dugmadi */
+            }
+
+            .list-card .btn-custom-sm,
+            .list-card .btn-delete-sm {
+                width: 100%; /* Zauzimaju punu širinu grupe dugmadi */
+            }
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Running Races</h1>
+    </header>
+
+    <div class="listing-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Explore Upcoming Races</h2>
+
+            <p>
+                <a asp-action="Create" class="btn btn-create-new">Create New Race</a>
+            </p>
+
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4">
+                        <div class="list-card mb-4 box-shadow">
+                            <img class="card-img-top" src="@item.Image" alt="Race image for @item.Title">
+                            <div class="card-body">
+                                <h5 class="card-text card-title-text">@item.Title</h5>
+                                <p class="card-text card-description-text">@item.Description</p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a asp-controller="Race" asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-custom-sm">View</a>
+                                        <a asp-controller="Race" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-custom-sm">Edit</a>
+                                        <a asp-controller="Race" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-delete-sm">Delete</a>
+                                    </div>
+                                    <small class="card-category-text">@item.RaceCategory</small>
                                 </div>
-                                <small class="text-muted">@item.RaceCategory</small>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-
+                }
+            </div>
         </div>
     </div>
 
-</div>
+   
+
+</body>
+</html>

@@ -1,65 +1,299 @@
 ﻿@model Club
-<!-- Page Content -->
-<div class="container">
 
-    <!-- Portfolio Item Heading -->
-    <h1 class="my-4">
-        @Model.Title
-      
-    </h1>
+@{
+    ViewData["Title"] = @Model.Title; // Postavi naslov stranice na ime kluba
+}
 
-    <!-- Portfolio Item Row -->
-    <div class="row">
+<style>
+    /* Globalni stilovi kopirani iz prethodnog dizajna, osiguravaju konzistentnost */
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('https://source.unsplash.com/1920x1080/?running,trail,marathon') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-        <div class="col-md-8">
-            <img class="img-fluid" src="@Model.Image" alt="">
+    header {
+        background: transparent;
+        color: white;
+        padding: 35px 0;
+        text-align: center;
+        position: relative;
+        z-index: 1000;
+    }
+
+        header h1 {
+            margin: 0;
+            font-size: 4em;
+            font-weight: 800;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            letter-spacing: 1px;
+        }
+
+    footer {
+        background: transparent;
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        margin-top: auto;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        font-size: 1em;
+    }
+
+    h2 { /* Glavni naslov sekcije, koristimo ga za naslove unutar glavnog sadržaja */
+        color: #2e8b57;
+        margin-top: 0;
+        border-bottom: 3px solid #3cb371;
+        padding-bottom: 12px;
+        margin-bottom: 30px;
+        font-size: 2.8em;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+
+    p {
+        line-height: 1.9;
+        margin-bottom: 25px;
+        font-size: 1.2em;
+        text-align: justify;
+    }
+
+    /* --- STILOVI ZA DETALJNI VIEW KLUBA --- */
+    .detail-section-container {
+        background: rgba(255, 255, 255, 0.92); /* Translucent white background */
+        padding: 50px 0;
+        margin-bottom: 25px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        flex-grow: 1; /* Allows this section to fill vertical space */
+    }
+
+    .detail-page-wrapper {
+        background: rgba(255, 255, 255, 0.98); /* Gotovo neprozirna bijela pozadina za sadržaj */
+        padding: 40px;
+        border-radius: 15px; /* Zaobljeni rubovi */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2); /* Izraženija sjena */
+        border: 1px solid rgba(220, 220, 220, 0.7); /* Suptilni okvir */
+    }
+
+        /* Glavni naslov kluba */
+        .detail-page-wrapper .my-4 { /* Ciljamo h1 sa klasom my-4 */
+            font-size: 2.8em; /* Slično h2 globalnom stilu */
+            font-weight: 700;
+            color: #2e8b57;
+            border-bottom: 3px solid #3cb371;
+            padding-bottom: 12px;
+            margin-top: 0 !important; /* Resetiraj Bootstrap marginu */
+            margin-bottom: 40px !important; /* Povećaj razmak ispod naslova */
+            text-align: left; /* Poravnanje lijevo */
+        }
+
+        /* Glavna slika kluba */
+        .detail-page-wrapper .img-fluid {
+            border-radius: 12px; /* Zaobljeni uglovi slike */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Sjajnija sjena */
+            margin-bottom: 30px; /* Razmak ispod slike na manjim ekranima */
+        }
+
+    /* Info kartica (Description, Location) */
+    .club-info-card {
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.9); /* Blago prozirna pozadina za info karticu */
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        height: 100%; /* Osigurava da kartica zauzima punu visinu */
+    }
+
+        .club-info-card .my-3 { /* Naslovi unutar info kartice (Club Description, Location) */
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2e8b57;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee; /* Suptilna linija ispod naslova */
+            padding-bottom: 8px;
+        }
+
+        .club-info-card p { /* Opis kluba */
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .club-info-card ul { /* Lista za lokaciju i kategoriju */
+            list-style: none; /* Ukloni podrazumijevane bullet pointe */
+            padding-left: 0;
+            margin-bottom: 0; /* Ukloni donju marginu */
+            text-align: left;
+        }
+
+            .club-info-card ul li {
+                font-size: 1.1em;
+                color: #555;
+                margin-bottom: 10px;
+                position: relative;
+                padding-left: 25px; /* Dodaj prostor za prilagođeni bullet */
+            }
+
+                .club-info-card ul li::before {
+                    content: '›'; /* Custom bullet point */
+                    color: #3cb371; /* Zelena boja za bullet */
+                    font-weight: bold;
+                    font-size: 1.3em;
+                    position: absolute;
+                    left: 0;
+                    top: -2px; /* Prilagodi poziciju */
+                }
+
+    /* Related Projects sekcija */
+    .related-projects-section .my-4 { /* Naslov "Related Projects" */
+        font-size: 2.2em;
+        font-weight: 700;
+        color: #2e8b57;
+        border-bottom: 3px solid #3cb371;
+        padding-bottom: 12px;
+        margin-top: 60px !important; /* Razmak iznad */
+        margin-bottom: 40px !important; /* Razmak ispod */
+        text-align: left;
+    }
+
+    /* Slike u Related Projects */
+    .related-project-img {
+        border-radius: 8px; /* Zaobljeni uglovi */
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1); /* Suptilna sjena */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .related-project-img:hover {
+            transform: translateY(-5px); /* Efekt podizanja na hoveru */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* Jača sjena na hoveru */
+        }
+
+    /* Responsivne prilagodbe */
+    @@media (max-width: 992px) {
+        .detail-page-wrapper {
+            padding: 30px;
+        }
+
+            .detail-page-wrapper .my-4 {
+                font-size: 2.4em;
+                margin-bottom: 30px !important;
+            }
+
+        .club-info-card .my-3 {
+            font-size: 1.6em;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .detail-section-container {
+            padding: 30px 0;
+        }
+
+        .detail-page-wrapper {
+            padding: 25px;
+            margin: 0 15px; /* Dodaj horizontalni margin na manjim ekranima */
+        }
+
+            .detail-page-wrapper .my-4 {
+                font-size: 2em;
+                margin-bottom: 25px !important;
+                text-align: center; /* Centriraj naslov na mobitelu */
+            }
+
+        .club-info-card {
+            margin-top: 30px; /* Razmak između slike i info kartice */
+        }
+
+        .related-projects-section .my-4 {
+            font-size: 1.8em;
+            text-align: center; /* Centriraj naslov na mobitelu */
+            margin-top: 40px !important;
+            margin-bottom: 30px !important;
+        }
+
+        .related-project-img {
+            margin-bottom: 20px; /* Razmak između srodnih slika */
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .detail-page-wrapper {
+            padding: 20px;
+        }
+
+            .detail-page-wrapper .my-4 {
+                font-size: 1.8em;
+            }
+
+        .club-info-card .my-3 {
+            font-size: 1.4em;
+        }
+
+        .club-info-card p, .club-info-card ul li {
+            font-size: 1em;
+        }
+
+        .related-projects-section .my-4 {
+            font-size: 1.6em;
+        }
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Club Details</h1>
+    </header>
+
+    <div class="detail-section-container">
+        <div class="container">
+            <div class="detail-page-wrapper">
+                <h1 class="my-4">
+                    @Model.Title
+                </h1>
+
+                <div class="row">
+
+                    <div class="col-md-8">
+                        <img class="img-fluid" src="@Model.Image" alt="Image of @Model.Title">
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="club-info-card">
+                            <h3 class="my-3">Club Description</h3>
+                            <p>@Model.Description</p>
+                            <h3 class="my-3">Location & Category</h3> <ul>
+                                <li>@Model.Address.City</li>
+                                <li>@Model.Address.State</li>
+                                <li>@Model.ClubCategory</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
         </div>
-
-        <div class="col-md-4">
-            <h3 class="my-3">Club Description</h3>
-            <p>@Model.Description</p>
-            <h3 class="my-3">Location</h3>
-            <ul>
-                <li>@Model.Address.City</li>
-                <li>@Model.Address.State</li>
-                <li>@Model.ClubCategory</li>
-              
-            </ul>
-        </div>
-
     </div>
-    <!-- /.row -->
-    <!-- Related Projects Row -->
-    <h3 class="my-4">Related Projects</h3>
-
-    <div class="row">
-
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-
-    </div>
-    <!-- /.row -->
-
-</div>
-<!-- /.container -->
+   
+</body>
+</html>

@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,258 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+/* Stilovi za _LoginPartial.cshtml (Auth Nav Links) */
+
+.login-partial-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+    .login-partial-nav .nav-item {
+        margin-left: 20px;
+    }
+
+    .login-partial-nav .custom-nav-link {
+        color: white;
+        font-weight: 600;
+        font-size: 1.1em;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        background-color: transparent;
+        border: 2px solid transparent;
+        display: inline-block;
+    }
+
+        .login-partial-nav .custom-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+    .login-partial-nav .logout-btn {
+        /* Moguće dodatne specifične stilizacije za dugme za odjavu ako je potrebno */
+    }
+
+/* Responsivne prilagodbe za navigaciju */
+@media (max-width: 992px) {
+    .login-partial-nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .login-partial-nav .nav-item {
+            margin-left: 0;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .login-partial-nav .custom-nav-link {
+            width: 100%;
+            text-align: center;
+            padding: 10px 15px;
+        }
+}
+
+@media (max-width: 768px) {
+    .login-partial-nav .custom-nav-link {
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-partial-nav .nav-item {
+        margin-bottom: 8px;
+    }
+
+    .login-partial-nav .custom-nav-link {
+        font-size: 0.95em;
+        padding: 6px 10px;
+    }
+}
+/* Stilovi za Login/Register forme */
+
+.main-content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px); /* Prilagodite visinu s obzirom na header/footer */
+    padding: 50px 20px;
+    background: rgba(255, 255, 255, 0.05); /* Vrlo blagi transparentni background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.1); /* Blagi unutrašnji shadow */
+}
+
+.form-card-container {
+    background: rgba(255, 255, 255, 0.95); /* Polu-prozirna bijela pozadina */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    max-width: 500px; /* Maksimalna širina forme */
+    width: 100%;
+    border: 1px solid rgba(220, 220, 220, 0.7);
+    text-align: center; /* Centriranje naslova i paragraf */
+}
+
+.form-title {
+    font-size: 2.8em;
+    font-weight: 700;
+    color: #333; /* Tamna boja teksta */
+    margin-bottom: 15px;
+    border-bottom: 2px solid #5cb85c; /* Zelena linija ispod naslova */
+    padding-bottom: 10px;
+}
+
+.form-subtitle {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.form-content-area {
+    text-align: left; /* Poravnavanje sadržaja forme lijevo */
+}
+
+.form-group-custom {
+    margin-bottom: 25px;
+}
+
+    .form-group-custom label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        font-size: 1.05em;
+    }
+
+.custom-form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .custom-form-control:focus {
+        border-color: #5cb85c; /* Zeleni border na fokusu */
+        box-shadow: 0 0 0 0.2rem rgba(92, 184, 92, 0.25); /* Zeleni shadow na fokusu */
+        outline: none;
+    }
+
+.form-check-custom {
+    display: flex;
+    align-items: center;
+    margin-top: -10px; /* Malo podići remember me */
+    margin-bottom: 20px !important; /* Osigurati razmak */
+}
+
+    .form-check-custom .form-check-input {
+        margin-right: 10px;
+        transform: scale(1.2); /* Malo veći checkbox */
+    }
+
+    .form-check-custom .form-check-label {
+        font-size: 1em;
+        color: #555;
+        font-weight: normal;
+    }
+
+.custom-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.primary-btn {
+    background-color: #5cb85c; /* Zelena boja */
+    color: white;
+    box-shadow: 0 4px 15px rgba(92, 184, 92, 0.4);
+}
+
+    .primary-btn:hover {
+        background-color: #4cae4c; /* Tamnija zelena na hoveru */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(92, 184, 92, 0.6);
+    }
+
+.form-link {
+    color: #5cb85c; /* Zelena boja za linkove */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+    .form-link:hover {
+        color: #4cae4c;
+        text-decoration: underline;
+    }
+
+/* Validacija */
+.validation-summary {
+    color: #dc3545; /* Crvena boja */
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.validation-message {
+    color: #dc3545; /* Crvena boja za pojedinačne greške */
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block; /* Da zauzme cijelu širinu */
+}
+
+/* Responsivnost za forme */
+@media (max-width: 768px) {
+    .form-card-container {
+        padding: 30px;
+    }
+
+    .form-title {
+        font-size: 2.2em;
+    }
+
+    .form-subtitle {
+        font-size: 1.1em;
+    }
+
+    .custom-btn {
+        font-size: 1.1em;
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-card-container {
+        padding: 20px;
+        margin: 0 10px;
+    }
+
+    .form-title {
+        font-size: 1.8em;
+    }
+
+    .form-subtitle {
+        font-size: 1em;
+    }
+
+    .custom-form-control {
+        padding: 10px;
+    }
 }

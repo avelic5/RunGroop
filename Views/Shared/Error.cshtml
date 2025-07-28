@@ -3,23 +3,218 @@
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<style>
+    /* Globalni stilovi kopirani iz prethodnog dizajna, osiguravaju konzistentnost */
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('https://source.unsplash.com/1920x1080/?running,trail,marathon') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+    header {
+        background: transparent;
+        color: white;
+        padding: 35px 0;
+        text-align: center;
+        position: relative;
+        z-index: 1000;
+    }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+        header h1 {
+            margin: 0;
+            font-size: 4em;
+            font-weight: 800;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            letter-spacing: 1px;
+        }
+
+    footer {
+        background: transparent;
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        margin-top: auto;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        font-size: 1em;
+    }
+
+    /* Novi stilovi za stranicu greške */
+    .error-wrapper {
+        background: rgba(255, 255, 255, 0.92); /* Translucent white background */
+        padding: 60px 0;
+        margin-bottom: 25px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        flex-grow: 1; /* Allows this section to fill vertical space */
+        display: flex; /* Koristi flexbox za centriranje sadržaja unutar wrappera */
+        align-items: center; /* Vertikalno centriranje */
+        justify-content: center; /* Horizontalno centriranje */
+        text-align: center; /* Centriranje teksta */
+    }
+
+    .error-content {
+        max-width: 800px; /* Širina sadržaja */
+        margin: 0 auto;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.98); /* Gotovo neprozirna bijela pozadina za sadržaj */
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        border: 1px solid rgba(220, 220, 220, 0.7);
+    }
+
+    .error-title {
+        font-size: 3.5em;
+        font-weight: 700;
+        color: #dc3545; /* Crvena boja za "Error" */
+        border-bottom: 3px solid #dc3545;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+    }
+
+    .error-subtitle {
+        font-size: 2em;
+        font-weight: 600;
+        color: #6c757d; /* Tamno siva boja za podnaslov */
+        margin-bottom: 25px;
+    }
+
+    .error-info {
+        font-size: 1.1em;
+        line-height: 1.8;
+        color: #495057;
+        margin-bottom: 20px;
+    }
+
+    .error-request-id {
+        background-color: #e9ecef;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        color: #343a40;
+        display: inline-block; /* Omogućava da se background primijeni samo na tekst */
+        margin-top: 10px;
+    }
+
+    /* Responsivne prilagodbe */
+    @@media (max-width: 992px) {
+        .error-content {
+            padding: 30px;
+        }
+
+        .error-title {
+            font-size: 3em;
+        }
+
+        .error-subtitle {
+            font-size: 1.8em;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        header h1 {
+            font-size: 2.8em;
+        }
+
+        .error-wrapper {
+            padding: 30px 0;
+        }
+
+        .error-content {
+            padding: 25px;
+            margin: 0 15px;
+        }
+
+        .error-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .error-subtitle {
+            font-size: 1.6em;
+            margin-bottom: 20px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        header h1 {
+            font-size: 2em;
+        }
+
+        .error-content {
+            padding: 20px;
+            margin: 0 10px;
+        }
+
+        .error-title {
+            font-size: 1.8em;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .error-subtitle {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .error-info {
+            font-size: 1em;
+        }
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Something Went Wrong!</h1>
+    </header>
+
+    <div class="error-wrapper">
+        <div class="container">
+            <div class="error-content">
+                <h1 class="error-title">Error.</h1>
+                <h2 class="error-subtitle">An error occurred while processing your request.</h2>
+
+                @if (Model.ShowRequestId)
+                {
+                    <p class="error-info">
+                        <strong>Request ID:</strong> <code class="error-request-id">@Model.RequestId</code>
+                    </p>
+                }
+
+                <h3 class="detail-subheading" style="margin-top: 40px;">Development Mode Information</h3>
+                <p class="error-info">
+                    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+                </p>
+                <p class="error-info">
+                    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+                    It can result in displaying sensitive information from exceptions to end users.
+                    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+                    and restarting the app.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 - Running Enthusiasts
+    </footer>
+
+</body>
+</html>

@@ -1,56 +1,313 @@
 ﻿@model RunGroopWebApp.Models.Club
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Club"; // Postavi naslov stranice
 }
 
-<h1>Edit</h1>
+<style>
+    /* Globalni stilovi kopirani iz prethodnog dizajna, osiguravaju konzistentnost */
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('https://source.unsplash.com/1920x1080/?running,trail,marathon') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-<h4>Club</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+    header {
+        background: transparent;
+        color: white;
+        padding: 35px 0;
+        text-align: center;
+        position: relative;
+        z-index: 1000;
+    }
+
+        header h1 {
+            margin: 0;
+            font-size: 4em;
+            font-weight: 800;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            letter-spacing: 1px;
+        }
+
+    footer {
+        background: transparent;
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        margin-top: auto;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+        font-size: 1em;
+    }
+
+    h2 { /* Glavni naslov sekcije, koristimo ga za "Edit Club" */
+        color: #2e8b57;
+        margin-top: 0;
+        border-bottom: 3px solid #3cb371;
+        padding-bottom: 12px;
+        margin-bottom: 30px;
+        font-size: 2.8em;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+
+    p {
+        line-height: 1.9;
+        margin-bottom: 25px;
+        font-size: 1.2em;
+        text-align: justify;
+    }
+
+    /* --- STILOVI ZA EDIT FORMU (REUSE OD CREATE FORME) --- */
+    .form-section-container {
+        background: rgba(255, 255, 255, 0.92); /* Translucent white background */
+        padding: 50px 0;
+        margin-bottom: 25px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        flex-grow: 1; /* Allows this section to fill vertical space */
+    }
+
+    .form-container {
+        max-width: 800px; /* Šira forma za bolju preglednost */
+        margin: 0 auto;
+        padding: 40px; /* Više paddinga unutar forme */
+        background: rgba(255, 255, 255, 0.98); /* Gotovo neprozirna bijela pozadina za samu formu */
+        border-radius: 15px; /* Zaobljeni rubovi forme */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2); /* Izraženija sjena */
+        border: 1px solid rgba(220, 220, 220, 0.7); /* Suptilni okvir */
+    }
+
+        .form-container h1,
+        .form-container h4 {
+            text-align: center;
+            color: #2e8b57; /* Zelena boja za naslove unutar forme */
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .form-container h1 {
+            font-size: 2.5em; /* Manji glavni naslov za formu */
+            margin-top: 0;
+            border-bottom: 2px solid #3cb371;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        .form-container h4 {
+            font-size: 1.6em;
+            color: #555;
+            margin-top: -10px; /* Približi h4 bliže h1 */
+            margin-bottom: 30px;
+        }
+
+        .form-container hr {
+            border-top: 2px solid #3cb371;
+            margin-bottom: 30px;
+            width: 50%; /* Skrati liniju */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+    .form-group {
+        margin-bottom: 20px; /* Razmak između polja forme */
+    }
+
+        .form-group label {
+            display: block; /* Osigurava da labela bude iznad inputa */
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+    .form-control { /* Ciljamo input i select elemente */
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd; /* Svijetliji okvir */
+        border-radius: 8px; /* Zaobljeni inputi/selecti */
+        font-size: 1em;
+        font-family: 'Open Sans', sans-serif;
+        color: #333;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box; /* Uključi padding i border u širinu */
+    }
+
+        .form-control:focus {
+            border-color: #3cb371; /* Zeleni okvir na fokusu */
+            box-shadow: 0 0 0 0.2rem rgba(60, 179, 113, 0.25); /* Zelena sjena na fokusu */
+            outline: none; /* Ukloni podrazumijevani outline */
+        }
+
+    .text-danger { /* Za validacijske poruke */
+        font-size: 0.88em;
+        color: #dc3545; /* Standardna crvena boja za greške */
+        margin-top: 5px;
+        display: block;
+    }
+
+    .btn-form-submit { /* Stil za Submit/Save dugme */
+        display: block;
+        width: fit-content;
+        margin: 30px auto 0 auto; /* Centriraj dugme */
+        background-color: #3cb371;
+        color: white;
+        padding: 15px 40px;
+        text-decoration: none !important;
+        border: none !important;
+        outline: none !important;
+        border-radius: 30px; /* Zaobljeni oblik dugmeta */
+        font-size: 1.2em;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+        letter-spacing: 0.5px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .btn-form-submit:hover {
+            background-color: #2e8b57;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+        }
+
+    .back-to-list-link { /* Stil za "Back to List" link */
+        display: block;
+        margin-top: 30px;
+        text-align: center;
+        color: #3cb371; /* Zelena boja */
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1em;
+        transition: color 0.2s ease, text-decoration 0.2s ease;
+    }
+
+        .back-to-list-link:hover {
+            color: #2e8b57;
+            text-decoration: underline;
+        }
+
+    /* Responsivne prilagodbe */
+    @@media (max-width: 768px) {
+        .form-container {
+            padding: 25px;
+            margin: 0 15px; /* Dodaj horizontalni margin na manjim ekranima */
+        }
+
+            .form-container h1 {
+                font-size: 2em;
+            }
+
+            .form-container h4 {
+                font-size: 1.4em;
+            }
+
+        .btn-form-submit {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            width: 90%; /* Zauzmi više širine na manjim ekranima */
+        }
+
+        .back-to-list-link {
+            font-size: 1em;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .form-container {
+            padding: 20px;
+        }
+
+            .form-container h1 {
+                font-size: 1.8em;
+            }
+
+            .form-container h4 {
+                font-size: 1.2em;
+            }
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Manage Clubs</h1>
+    </header>
+
+    <div class="form-section-container">
+        <div class="container">
+            <div class="form-container">
+                <h1>Edit</h1>
+                <h4>Club</h4>
+                <hr />
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+                            <div class="form-group">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label"></label>
+                                <input asp-for="Description" class="form-control" />
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Image" class="control-label"></label>
+                                <input asp-for="Image" class="form-control" />
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AddressId" class="control-label"></label>
+                                <select asp-for="AddressId" class="form-control" asp-items="ViewBag.AddressId"></select>
+                                <span asp-validation-for="AddressId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ClubCategory" class="control-label"></label>
+                                <select asp-for="ClubCategory" class="form-control"></select>
+                                <span asp-validation-for="ClubCategory" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AppUserId" class="control-label"></label>
+                                <select asp-for="AppUserId" class="form-control" asp-items="ViewBag.AppUserId"></select>
+                                <span asp-validation-for="AppUserId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-form-submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+
+            <div>
+                <a asp-action="Index" class="back-to-list-link">Back to List</a>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AddressId" class="control-label"></label>
-                <select asp-for="AddressId" class="form-control" asp-items="ViewBag.AddressId"></select>
-                <span asp-validation-for="AddressId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ClubCategory" class="control-label"></label>
-                <select asp-for="ClubCategory" class="form-control"></select>
-                <span asp-validation-for="ClubCategory" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUserId" class="control-label"></label>
-                <select asp-for="AppUserId" class="form-control" asp-items="ViewBag.AppUserId"></select>
-                <span asp-validation-for="AppUserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+  
 
+</body>
+</html>
