@@ -39,11 +39,10 @@ Before you begin, ensure you have the following installed:
 1.  **Clone the Repository:**
     Start by cloning the project from GitHub to your local machine:
     ```bash
-    git clone [https://github.com/YourUsername/RunGroopWebApp.git](https://github.com/YourUsername/RunGroopWebApp.git)
+    git clone [https://github.com/avelic5/RunGroopWebApp.git](https://github.com/avelic5/RunGroopWebApp.git)
     cd RunGroopWebApp
     ```
-    *(Replace `YourUsername` with your actual GitHub username and `RunGroopWebApp` if your repository name differs.)*
-
+    
 2.  **Configure Database Connection:**
     * Open the `RunGroopWebApp.sln` solution file in Visual Studio.
     * Navigate to `appsettings.json` (or `appsettings.Development.json`) in the project's root directory.
