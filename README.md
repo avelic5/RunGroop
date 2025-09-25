@@ -75,11 +75,6 @@ Before you begin, ensure you have the following installed:
 
 ## Screenshots
 
-**Please insert your application screenshots here.**
-
-You can embed images using Markdown syntax. For example:
-
-
 <img width="1889" height="897" alt="Screenshot 2025-07-28 152302" src="https://github.com/user-attachments/assets/80d8d066-2a68-494f-be73-b406b97d846b" />
 <img width="1886" height="881" alt="Screenshot 2025-07-28 152315" src="https://github.com/user-attachments/assets/3217003b-5329-4e7e-99b9-4ee55037e1d9" />
 <img width="1891" height="902" alt="Screenshot 2025-07-28 152333" src="https://github.com/user-attachments/assets/f9f1d6e4-8fb2-4212-b333-f252fae975a4" />
